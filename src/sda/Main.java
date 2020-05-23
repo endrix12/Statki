@@ -21,13 +21,19 @@ public class Main {
 
 
         //ustawianie jednomasztowców
-        for (int i = 0; i < 4; i++) {
+        System.out.println("Podaj współrzędne czterech okrętów jednomasztowych:");
+        for (int i = 0; i < 4; ) {
             System.out.println("Podaj numer wiersza:");
             int x = sc.nextInt();
             System.out.println("Podaj numer kolumny:");
             int y = sc.nextInt();
+            if(mojePole[x-1][y-1] == 'O'){
+                System.out.println("To pole jest zajęte! Podaj inne współrzędne.");
+                continue;
+            }
             mojePole[x-1][y-1] = 'O';
             showState(mojePole);
+            i++;
 
 
         }
@@ -52,5 +58,6 @@ public class Main {
             System.out.println();
 
         }
+        System.out.println();
     }
 }
