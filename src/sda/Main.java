@@ -13,7 +13,13 @@ public class Main {
 
         fillMyPool(mojePole);
         showState(mojePole);
-        setFourMastShips(mojePole, sc);
+        setShips(mojePole, sc,4);
+
+        setShips(mojePole, sc,3);
+        setShips(mojePole, sc,3);
+        setShips(mojePole, sc,2);
+        setShips(mojePole, sc,2);
+        setShips(mojePole, sc,2);
         setOneMastShips(mojePole, sc);
         showState(mojePole);
 
@@ -45,10 +51,8 @@ public class Main {
             }
             mojePole[x - 1][y - 1] = 'O';
             blockAdjacentCoordinate(mojePole, x, y);
-
             showState(mojePole);
             i++;
-
 
         }
     }
@@ -81,9 +85,9 @@ public class Main {
     }
 
     //ustawianie czteromasztowca
-    private static void setFourMastShips(char[][] mojePole, Scanner sc) {
-        System.out.println("Podaj współrzędne okrętu czteromasztowego:");
-        for (int i = 0; i < 4; ) {
+    private static void setShips(char[][] mojePole, Scanner sc, int numberOfMast) {
+        System.out.println("Podaj współrzędne okrętu " + numberOfMast + " masztowego:");
+        for (int i = 0; i < numberOfMast; ) {
             System.out.println("Podaj numer wiersza:");
             int x = sc.nextInt();
             System.out.println("Podaj numer kolumny:");
@@ -103,7 +107,11 @@ public class Main {
                     continue;
                 }
 
+            } else if (mojePole[x - 1][y - 1] == ' ') {
+                System.out.println("To pole jest zajęte! Podaj inne współrzędne.");
+                continue;
             }
+
             mojePole[x - 1][y - 1] = 'O';
             blockAdjacentCoordinate(mojePole, x, y);
             showState(mojePole);
