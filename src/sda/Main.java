@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class Main {
 
-
     public static void main(String[] args) {
 
         System.out.println("***STATKI***\n");
@@ -13,16 +12,19 @@ public class Main {
 
         fillMyPool(mojePole);
         showState(mojePole);
-        setShips(mojePole, sc,4);
 
-        setShips(mojePole, sc,3);
-        setShips(mojePole, sc,3);
-        setShips(mojePole, sc,2);
-        setShips(mojePole, sc,2);
-        setShips(mojePole, sc,2);
-        setOneMastShips(mojePole, sc);
+        setShips(mojePole, sc, 4);
+        setShips(mojePole, sc, 3);
+        setShips(mojePole, sc, 3);
+        setShips(mojePole, sc, 2);
+        setShips(mojePole, sc, 2);
+        setShips(mojePole, sc, 2);
+        setShips(mojePole, sc, 1);
+        setShips(mojePole, sc, 1);
+        setShips(mojePole, sc, 1);
+        setShips(mojePole, sc, 1);
+
         showState(mojePole);
-
     }
 
     private static void fillMyPool(char[][] mojePole) {
@@ -30,30 +32,6 @@ public class Main {
             for (int j = 0; j < mojePole[i].length; j++) {
                 mojePole[i][j] = '~';
             }
-        }
-    }
-
-    //ustawianie jednomasztowców
-    private static void setOneMastShips(char[][] mojePole, Scanner sc) {
-        System.out.println("Podaj współrzędne czterech okrętów jednomasztowych:");
-        for (int i = 0; i < 4; ) {
-            System.out.println("Podaj numer wiersza:");
-            int x = sc.nextInt();
-            System.out.println("Podaj numer kolumny:");
-            int y = sc.nextInt();
-            if (x < 1 || y < 1 || x > 10 || y > 10) {
-                System.out.println("Nieprawidłowa wartość. Podaj współrzedne z przedziału od 1 do 10");
-                continue;
-            }
-            if (mojePole[x - 1][y - 1] == 'O' || mojePole[x - 1][y - 1] == ' ') {
-                System.out.println("To pole jest zajęte! Podaj inne współrzędne.");
-                continue;
-            }
-            mojePole[x - 1][y - 1] = 'O';
-            blockAdjacentCoordinate(mojePole, x, y);
-            showState(mojePole);
-            i++;
-
         }
     }
 
@@ -84,14 +62,13 @@ public class Main {
         }
     }
 
-    //ustawianie czteromasztowca
     private static void setShips(char[][] mojePole, Scanner sc, int numberOfMast) {
         System.out.println("Podaj współrzędne okrętu " + numberOfMast + " masztowego:");
         for (int i = 0; i < numberOfMast; ) {
-            System.out.println("Podaj numer wiersza:");
-            int x = sc.nextInt();
             System.out.println("Podaj numer kolumny:");
             int y = sc.nextInt();
+            System.out.println("Podaj numer wiersza:");
+            int x = sc.nextInt();
             if (x < 1 || y < 1 || x > 10 || y > 10) {
                 System.out.println("Nieprawidłowa wartość. Podaj współrzedne z przedziału od 1 do 10");
                 continue;
@@ -102,7 +79,10 @@ public class Main {
             }
             if (i != 0) {
 
-                if ((x == 10 || mojePole[x][y - 1] != 'O') && (y == 10 || mojePole[x - 1][y] != 'O') && (y == 1 || mojePole[x - 1][y - 2] != 'O') && (x == 1 || mojePole[x - 2][y - 1] != 'O')) {
+                if ((x == 10 || mojePole[x][y - 1] != 'O')
+                        && (y == 10 || mojePole[x - 1][y] != 'O')
+                        && (y == 1 || mojePole[x - 1][y - 2] != 'O')
+                        && (x == 1 || mojePole[x - 2][y - 1] != 'O')) {
                     System.out.println("współrzędne powinny sąsiadować");
                     continue;
                 }
@@ -116,8 +96,6 @@ public class Main {
             blockAdjacentCoordinate(mojePole, x, y);
             showState(mojePole);
             i++;
-
-
         }
     }
 
@@ -127,14 +105,12 @@ public class Main {
             System.out.print((i + 1) + " ");
         }
         System.out.println();
-
         for (int i = 0; i < mojePole.length; i++) {
             System.out.printf("%2d ", i + 1);
             for (int j = 0; j < mojePole[i].length; j++) {
                 System.out.print(mojePole[i][j] + " ");
             }
             System.out.println();
-
         }
         System.out.println();
     }
