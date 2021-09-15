@@ -32,7 +32,7 @@ public class Main {
 
         DataInputStream din = new DataInputStream(s.getInputStream());
         DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
         dout.writeUTF(unit + " connected");
         dout.flush();
         System.out.println(din.readUTF());
@@ -65,11 +65,11 @@ public class Main {
         while (true) {
             if (yourTurn) {
                 System.out.println("Your turn! write column number");
-                y = Integer.parseInt(br.readLine());
+                y = sc.nextInt();
                 dout.writeInt(y);
                 dout.flush();
                 System.out.println("Your turn! write row number");
-                x = Integer.parseInt(br.readLine());
+                x = sc.nextInt();
                 dout.writeInt(x);
                 dout.flush();
                 String shot = din.readUTF();
@@ -134,29 +134,29 @@ public class Main {
     }
 
     private static void blockAdjacentCoordinate(char[][] myFleet, int x, int y) {
-        if (x != 10 && myFleet[x][y - 1] != 'O') {
-            myFleet[x][y - 1] = ' ';
-            if (y != 1 && myFleet[x][y - 2] != 'O') {
-                myFleet[x][y - 2] = ' ';
+        if (x != 10 && myFleet[x][y - 1] != 'O' && myFleet[x][y - 1] != ' ') {
+            myFleet[x][y - 1] = '.';
+            if (y != 1 && myFleet[x][y - 2] != 'O' && myFleet[x][y - 2] != ' ') {
+                myFleet[x][y - 2] = '.';
             }
-            if (y != 10 && myFleet[x][y] != 'O') {
-                myFleet[x][y] = ' ';
+            if (y != 10 && myFleet[x][y] != 'O' && myFleet[x][y] != ' ') {
+                myFleet[x][y] = '.';
             }
         }
-        if (x != 1 && myFleet[x - 2][y - 1] != 'O') {
-            if (y != 1 && myFleet[x - 2][y - 2] != 'O') {
-                myFleet[x - 2][y - 2] = ' ';
+        if (x != 1 && myFleet[x - 2][y - 1] != 'O' && myFleet[x - 2][y - 1] != ' ') {
+            if (y != 1 && myFleet[x - 2][y - 2] != 'O' && myFleet[x - 2][y - 2] != ' ') {
+                myFleet[x - 2][y - 2] = '.';
             }
-            if (y != 10 && myFleet[x - 2][y] != 'O') {
-                myFleet[x - 2][y] = ' ';
+            if (y != 10 && myFleet[x - 2][y] != 'O' && myFleet[x - 2][y] != ' ') {
+                myFleet[x - 2][y] = '.';
             }
-            myFleet[x - 2][y - 1] = ' ';
+            myFleet[x - 2][y - 1] = '.';
         }
-        if (y != 10 && myFleet[x - 1][y] != 'O') {
-            myFleet[x - 1][y] = ' ';
+        if (y != 10 && myFleet[x - 1][y] != 'O' && myFleet[x - 1][y] != ' ') {
+            myFleet[x - 1][y] = '.';
         }
-        if (y != 1 && myFleet[x - 1][y - 2] != 'O') {
-            myFleet[x - 1][y - 2] = ' ';
+        if (y != 1 && myFleet[x - 1][y - 2] != 'O' && myFleet[x - 1][y - 2] != ' ') {
+            myFleet[x - 1][y - 2] = '.';
         }
     }
 
@@ -177,10 +177,10 @@ public class Main {
             }
             if (i != 0) {
 
-                if ((x == 10 || myFleet[x][y - 1] != 'O')
+                if (((x == 10 || myFleet[x][y - 1] != 'O')
                         && (y == 10 || myFleet[x - 1][y] != 'O')
                         && (y == 1 || myFleet[x - 1][y - 2] != 'O')
-                        && (x == 1 || myFleet[x - 2][y - 1] != 'O')) {
+                        && (x == 1 || myFleet[x - 2][y - 1] != 'O'))||(myFleet[x - 1][y - 1] != '.')) {
                     System.out.println("współrzędne powinny sąsiadować");
                     continue;
                 }
@@ -195,6 +195,8 @@ public class Main {
             showState(myFleet);
             i++;
         }
+        refillSpaceAroundShip(myFleet);
+        showState(myFleet);
     }
 
     private static void showState(char[][] myFleet) {
@@ -220,6 +222,17 @@ public class Main {
             for (int j = 0; j < myFleet[i].length; j++) {
                 if (myFleet[i][j] == ' ') {
                     myFleet[i][j] = '~';
+                }
+            }
+        }
+    }
+
+    private static void refillSpaceAroundShip(char[][] myFleet) {
+
+        for (int i = 0; i < myFleet.length; i++) {
+            for (int j = 0; j < myFleet[i].length; j++) {
+                if (myFleet[i][j] == '.') {
+                    myFleet[i][j] = ' ';
                 }
             }
         }
