@@ -3,39 +3,46 @@ package sda;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
 
+    static  char charRepresentShip = 'O';
+    static Scanner sc = new Scanner(System.in);
+    static String ip ;
+
     public static void main(String[] args) throws IOException {
 
-        System.out.println("***STATKI***\n");
+        System.out.println("***SHIPS***\n");
         char[][] myFleet = new char[10][10];
         char[][] enemyFleet = new char[10][10];
 
-        Scanner sc = new Scanner(System.in);
-        String unit = "Client";
+        String unit = "Player 2";
         boolean yourTurn = true;
-        boolean isGameOver = false;
+        boolean isGameOver;
 
         System.out.println("If you wanna start game as server choose \"s\". Anything else start as client.");
         String choose = sc.next();
         Socket s;
         if (choose.equals("s")) {
-            unit = "Serwer";
+            unit = "Player 1";
             yourTurn = false;
             ServerSocket ss = new ServerSocket(3333);
             s = ss.accept();
         } else {
-            s = new Socket("localhost", 3333);
+            System.out.println("Write server ip address: ");
+            ip = sc.next();
+            s = new Socket(ip, 3333);
         }
 
         DataInputStream din = new DataInputStream(s.getInputStream());
         DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-        
+
         dout.writeUTF(unit + " connected");
         dout.flush();
         System.out.println(din.readUTF());
+
 
         fillMyPool(myFleet);
         fillMyPool(enemyFleet);
@@ -56,12 +63,12 @@ public class Main {
         showState(myFleet);
         showState(enemyFleet);
 
-        System.out.println("Wait for oponnent");
+        System.out.println("Wait for opponent");
         dout.writeUTF(unit + " is ready for game");
         dout.flush();
         System.out.println(din.readUTF());
 
-        int x = 0, y = 0;
+        int x , y ;
         while (true) {
             if (yourTurn) {
                 System.out.println("Your turn! write column number");
@@ -88,7 +95,7 @@ public class Main {
                 }
                 showState(myFleet);
                 showState(enemyFleet);
-                System.out.println(yourTurn ? "shot again" : "Enemy turn");
+                System.out.println(yourTurn ? "shot again" : "Enemy's turn");
             } else {
                 y = din.readInt();
                 System.out.println(unit + " says: " + y);
@@ -101,7 +108,7 @@ public class Main {
                     yourTurn = false;
                     isGameOver = checkIsGameOver(myFleet);
                     if (isGameOver) {
-                        System.out.println("GAME OVER you loose");
+                        System.err.println("GAME OVER you loose");
                         dout.writeUTF("You WIN");
                         dout.flush();
                         break;
@@ -123,39 +130,38 @@ public class Main {
         }
         dout.close();
         s.close();
+        sc.close();
     }
 
     private static void fillMyPool(char[][] myFleet) {
-        for (int i = 0; i < myFleet.length; i++) {
-            for (int j = 0; j < myFleet[i].length; j++) {
-                myFleet[i][j] = '~';
-            }
+        for (char[] chars : myFleet) {
+            Arrays.fill(chars, '~');
         }
     }
 
     private static void blockAdjacentCoordinate(char[][] myFleet, int x, int y) {
-        if (x != 10 && myFleet[x][y - 1] != 'O' && myFleet[x][y - 1] != ' ') {
+        if (x != 10 && myFleet[x][y - 1] != charRepresentShip && myFleet[x][y - 1] != ' ') {
             myFleet[x][y - 1] = '.';
-            if (y != 1 && myFleet[x][y - 2] != 'O' && myFleet[x][y - 2] != ' ') {
+            if (y != 1 && myFleet[x][y - 2] != charRepresentShip && myFleet[x][y - 2] != ' ') {
                 myFleet[x][y - 2] = '.';
             }
-            if (y != 10 && myFleet[x][y] != 'O' && myFleet[x][y] != ' ') {
+            if (y != 10 && myFleet[x][y] != charRepresentShip && myFleet[x][y] != ' ') {
                 myFleet[x][y] = '.';
             }
         }
-        if (x != 1 && myFleet[x - 2][y - 1] != 'O' && myFleet[x - 2][y - 1] != ' ') {
-            if (y != 1 && myFleet[x - 2][y - 2] != 'O' && myFleet[x - 2][y - 2] != ' ') {
+        if (x != 1 && myFleet[x - 2][y - 1] != charRepresentShip && myFleet[x - 2][y - 1] != ' ') {
+            if (y != 1 && myFleet[x - 2][y - 2] != charRepresentShip && myFleet[x - 2][y - 2] != ' ') {
                 myFleet[x - 2][y - 2] = '.';
             }
-            if (y != 10 && myFleet[x - 2][y] != 'O' && myFleet[x - 2][y] != ' ') {
+            if (y != 10 && myFleet[x - 2][y] != charRepresentShip && myFleet[x - 2][y] != ' ') {
                 myFleet[x - 2][y] = '.';
             }
             myFleet[x - 2][y - 1] = '.';
         }
-        if (y != 10 && myFleet[x - 1][y] != 'O' && myFleet[x - 1][y] != ' ') {
+        if (y != 10 && myFleet[x - 1][y] != charRepresentShip && myFleet[x - 1][y] != ' ') {
             myFleet[x - 1][y] = '.';
         }
-        if (y != 1 && myFleet[x - 1][y - 2] != 'O' && myFleet[x - 1][y - 2] != ' ') {
+        if (y != 1 && myFleet[x - 1][y - 2] != charRepresentShip && myFleet[x - 1][y - 2] != ' ') {
             myFleet[x - 1][y - 2] = '.';
         }
     }
@@ -171,16 +177,16 @@ public class Main {
                 System.out.println("Nieprawidłowa wartość. Podaj współrzedne z przedziału od 1 do 10");
                 continue;
             }
-            if (myFleet[x - 1][y - 1] == 'O') {
+            if (myFleet[x - 1][y - 1] == charRepresentShip) {
                 System.out.println("To pole jest zajęte! Podaj inne współrzędne.");
                 continue;
             }
             if (i != 0) {
 
-                if (((x == 10 || myFleet[x][y - 1] != 'O')
-                        && (y == 10 || myFleet[x - 1][y] != 'O')
-                        && (y == 1 || myFleet[x - 1][y - 2] != 'O')
-                        && (x == 1 || myFleet[x - 2][y - 1] != 'O'))||(myFleet[x - 1][y - 1] != '.')) {
+                if (((x == 10 || myFleet[x][y - 1] != charRepresentShip)
+                        && (y == 10 || myFleet[x - 1][y] != charRepresentShip)
+                        && (y == 1 || myFleet[x - 1][y - 2] != charRepresentShip)
+                        && (x == 1 || myFleet[x - 2][y - 1] != charRepresentShip))||(myFleet[x - 1][y - 1] != '.')) {
                     System.out.println("współrzędne powinny sąsiadować");
                     continue;
                 }
@@ -190,7 +196,7 @@ public class Main {
                 continue;
             }
 
-            myFleet[x - 1][y - 1] = 'O';
+            myFleet[x - 1][y - 1] = charRepresentShip;
             blockAdjacentCoordinate(myFleet, x, y);
             showState(myFleet);
             i++;
@@ -240,9 +246,9 @@ public class Main {
 
     private static boolean checkIsGameOver(char[][] myFleet) {
 
-        for (int i = 0; i < myFleet.length; i++) {
-            for (int j = 0; j < myFleet[i].length; j++) {
-                if (myFleet[i][j] == 'O') {
+        for (char[] chars : myFleet) {
+            for (char aChar : chars) {
+                if (aChar == charRepresentShip) {
                     return false;
                 }
             }
